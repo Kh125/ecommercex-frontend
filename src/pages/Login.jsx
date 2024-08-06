@@ -2,6 +2,7 @@ import { useState } from "react";
 import { axiosAPI } from "../middleware/axiosHelper";
 import useAuth from "../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
+import { createToastMessage } from "../utils/ToastMessage";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -38,6 +39,7 @@ const Login = () => {
       setAuth({ token, user });
       setErrors(null);
       navigate(from, { replace: true });
+      createToastMessage("Login Successfully");
     } catch (err) {
       if (err.response) {
         const { data } = err.response;

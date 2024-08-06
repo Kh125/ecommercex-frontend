@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import ProductForm from "../components/ProductForm";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
+import { createToastMessage } from "../utils/ToastMessage";
 
 const CreateProduct = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const CreateProduct = () => {
 
       // console.log(response.data);
       navigate("/products");
+      createToastMessage("Product is successfully created!");
     } catch (error) {
       console.log("Error" + error);
     } finally {

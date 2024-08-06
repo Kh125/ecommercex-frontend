@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
 import useAuth from "../hooks/useAuth";
+import { createToastMessage } from "../utils/ToastMessage";
 
 const Profile = () => {
   const { auth } = useAuth();
@@ -69,13 +70,14 @@ const Profile = () => {
 
   const handleSave = async () => {
     // Implement save functionality
-    console.log("User Info", userInfo);
+    // console.log("User Info", userInfo);
 
     try {
       const response = await axiosPrivateAPI.post("/auth/userInfo", {
         user: userInfo,
       });
 
+      createToastMessage("User Information successfully updated!");
       // console.log(response.data);
     } catch (error) {
       console.log(error?.response);
@@ -102,6 +104,7 @@ const Profile = () => {
         );
 
         setPasswordResetMode(false);
+        createToastMessage(response?.data?.message);
         // console.log(response?.data);
       } catch (error) {
         // console.log(error.response);

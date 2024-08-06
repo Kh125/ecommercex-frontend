@@ -3,6 +3,7 @@ import ProductForm from "../components/ProductForm";
 import { axiosAPI } from "../middleware/axiosHelper";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
+import { createToastMessage } from "../utils/ToastMessage";
 
 const UpdateProduct = () => {
   const { id } = useParams();
@@ -46,6 +47,7 @@ const UpdateProduct = () => {
 
       // console.log(response.data);
       navigate("/products");
+      createToastMessage("Product is successfully created!");
     } catch (error) {
       console.log("Error" + error);
     } finally {

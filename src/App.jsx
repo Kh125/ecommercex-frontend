@@ -15,6 +15,8 @@ import CreateProduct from "./pages/CreateProduct";
 import UpdateProduct from "./pages/UpdateProduct";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 function App() {
   const { auth, setAuth } = useAuth();
@@ -61,6 +63,7 @@ function App() {
     <>
       <Router>
         <NavBar />
+        <ToastContainer />
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="" element={<Home />} />

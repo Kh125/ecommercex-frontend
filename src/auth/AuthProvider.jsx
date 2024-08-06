@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import AuthService from "../services/authService";
+import { createToastMessage } from "../utils/ToastMessage";
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -13,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     authLogout();
     setAuth(null);
+    createToastMessage("Logout successfully");
   };
 
   useEffect(() => {
