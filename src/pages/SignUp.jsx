@@ -54,12 +54,12 @@ const SignUp = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
+    <div className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 pb-6 sm:pb-12">
       <form onSubmit={handleSubmit}>
         <div className="relative py-3 sm:w-96 mx-auto text-center">
-          <span className="text-2xl font-light ">Sign Up</span>
+          <p className="text-2xl font-light ">Sign Up</p>
           <div className="mt-4 bg-white shadow-md rounded-lg text-left">
-            <div className="h-2 bg-purple-400 rounded-t-md"></div>
+            <div className="h-2 bg-green-400 rounded-t-md"></div>
             <div className="px-8 py-6 ">
               <label className="block font-semibold"> Username</label>
               <input
@@ -111,7 +111,7 @@ const SignUp = () => {
               <div className="flex justify-between items-baseline">
                 <button
                   type="submit"
-                  className="mt-4 bg-purple-500 text-white py-2 px-6 rounded-md hover:bg-purple-600 "
+                  className="mt-4 bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 "
                 >
                   Submit
                 </button>

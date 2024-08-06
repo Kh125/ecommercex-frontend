@@ -12,18 +12,6 @@ const Login = () => {
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
 
-  const refreshToken = async () => {
-    try {
-      const response = await axiosAPI.get("/auth/refreshToken", {
-        withCredentials: true,
-      });
-
-      console.log(response.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -68,7 +56,7 @@ const Login = () => {
         <span className="text-2xl font-light ">Login to your account</span>
         <form onSubmit={handleLogin}>
           <div className="mt-4 bg-white shadow-md rounded-lg text-left">
-            <div className="h-2 bg-purple-400 rounded-t-md"></div>
+            <div className="h-2 bg-green-400 rounded-t-md"></div>
             <div className="px-8 py-6 ">
               <label className="block font-semibold">Username</label>
               <input
@@ -99,7 +87,7 @@ const Login = () => {
               <div className="flex justify-between items-baseline">
                 <button
                   type="submit"
-                  className="mt-4 bg-purple-500 text-white py-2 px-6 rounded-md hover:bg-purple-600 "
+                  className="mt-4 bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 "
                 >
                   Login
                 </button>
@@ -110,8 +98,6 @@ const Login = () => {
             </div>
           </div>
         </form>
-
-        <button onClick={refreshToken}>refresh token</button>
       </div>
     </div>
   );

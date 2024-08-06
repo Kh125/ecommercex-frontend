@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { CgShoppingCart, CgLogOut } from "react-icons/cg";
+import { AiOutlineUser } from "react-icons/ai";
 
 const NavBar = () => {
   const { auth, logout } = useAuth();
@@ -42,11 +44,23 @@ const NavBar = () => {
                     >
                       Products
                     </Link>
+                    <Link
+                      to="/cart"
+                      className="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      <CgShoppingCart className="mr-1 text-xl" /> Cart
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Profile <AiOutlineUser className="ml-1 text-xl" />
+                    </Link>
                     <a
                       onClick={logout}
-                      className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className="flex items-center cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
-                      Logout
+                      Logout <CgLogOut className="ml-1 text-xl" />
                     </a>
                   </>
                 )}

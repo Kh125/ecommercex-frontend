@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-
+import AuthService from "../services/authService";
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -7,10 +7,11 @@ export const AuthProvider = ({ children }) => {
     let accessToken = localStorage.getItem("accessToken");
     return accessToken ? { token: accessToken } : null;
   });
+  const { authLogout } = AuthService();
 
   const logout = () => {
+    authLogout();
     setAuth(null);
-    localStorage.removeItem("accessToken");
   };
 
   useEffect(() => {

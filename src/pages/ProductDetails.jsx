@@ -1,25 +1,53 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { axiosAPI } from "../middleware/axiosHelper";
+import useCartContext from "../hooks/useCartContext";
+import useAxiosPrivate from "../middleware/usePrivateAxios";
+import {
+  AiOutlineDollarCircle,
+  AiOutlineRollback,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
 
 const ProductDetails = () => {
+  const axiosPrivateAPI = useAxiosPrivate();
+  const { cartItems, setCartItems } = useCartContext();
   const { id } = useParams();
   const [product, setProduct] = useState({});
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
+
+  const addProductToCart = () => {
+    cartItems.push(product);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    setIsAddedToCart(true);
+  };
+
+  const removeProductFromCart = () => {
+    let updatedproducts = cartItems.filter((q) => q._id !== product._id);
+    setCartItems(updatedproducts);
+    localStorage.setItem("cartItems", JSON.stringify(updatedproducts));
+    setIsAddedToCart(false);
+  };
+
+  console.log("Cart Items", cartItems);
 
   useEffect(() => {
     const fetchProductInfo = async () => {
       try {
-        const response = await axiosAPI.get(`/products/${id}`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axiosPrivateAPI.get(`/products/${id}`);
 
-        console.log("Product Data", response.data);
         setProduct(response.data?.product);
+
+        let productData = response?.data?.product;
+
+        const product = cartItems.find((p) => p._id == productData._id);
+
+        if (product) {
+          setIsAddedToCart(true);
+        } else {
+          setIsAddedToCart(false);
+        }
       } catch (error) {
-        console.log(error);
+        console.log("Response", error?.response);
       }
     };
 
@@ -60,7 +88,10 @@ const ProductDetails = () => {
                 </tr>
                 <tr className="border-b border-gray-200">
                   <td className="py-2 px-4 text-gray-600">Price</td>
-                  <td className="py-2 px-4 text-gray-800">${product.price}</td>
+                  <td className="flex items-center py-2 px-4 text-gray-800">
+                    <AiOutlineDollarCircle className="mr-1 text-orange-400 text-xl" />
+                    {product.price}
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-200">
                   <td className="py-2 px-4 text-gray-600">Stock</td>
@@ -75,16 +106,29 @@ const ProductDetails = () => {
             <div className="mt-6 flex space-x-4">
               <Link
                 to="/products"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+                className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
               >
+                <AiOutlineRollback className="text-xl mr-1" />
                 Go Back
               </Link>
-              <button
-                onClick={() => alert("Add to cart functionality")}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
-              >
-                Add to Cart
-              </button>
+              {!isAddedToCart && (
+                <button
+                  onClick={addProductToCart}
+                  className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+                >
+                  <AiOutlineShoppingCart className="mr-1 text-xl" />
+                  Add to Cart
+                </button>
+              )}
+              {isAddedToCart && (
+                <button
+                  onClick={removeProductFromCart}
+                  className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-600 transition duration-300"
+                >
+                  <AiOutlineShoppingCart className="mr-1 text-xl" />
+                  Remove from Cart
+                </button>
+              )}
               <Link
                 to={`/products/update/${id}`}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"

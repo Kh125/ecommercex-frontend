@@ -13,6 +13,8 @@ import useAuth from "./hooks/useAuth";
 import { useEffect } from "react";
 import CreateProduct from "./pages/CreateProduct";
 import UpdateProduct from "./pages/UpdateProduct";
+import Cart from "./pages/Cart";
+import Profile from "./pages/Profile";
 
 function App() {
   const { auth, setAuth } = useAuth();
@@ -67,6 +69,8 @@ function App() {
 
             <Route element={<RequireAuth />}>
               <Route path="products" element={<Products />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="cart" element={<Cart />} />
               <Route path="products/:id" element={<ProductDetails />} />
               <Route path="products/create" element={<CreateProduct />} />
               <Route path="products/update/:id" element={<UpdateProduct />} />

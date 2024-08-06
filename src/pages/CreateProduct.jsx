@@ -35,7 +35,11 @@ const CreateProduct = () => {
   };
 
   return (
-    <ProductForm onSubmit={handleProductCreate} formText="Create New Product" />
+    <ProductForm
+      onSubmit={handleProductCreate}
+      formText="Create New Product"
+      buttonText="Create"
+    />
   );
 };
 

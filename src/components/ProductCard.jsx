@@ -1,4 +1,5 @@
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { AiFillDollarCircle, AiOutlineArrowRight } from "react-icons/ai";
 
 const ProductCard = ({ product }) => {
   return (
@@ -12,13 +13,21 @@ const ProductCard = ({ product }) => {
         className="w-full h-32 object-cover"
       />
       <div className="p-4">
-        <h2 className="text-lg font-semibold text-gray-800">{product.name}</h2>
-        <p className="text-gray-600 mt-1 mb-2">${product.price}</p>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {product.name}
+          </h2>
+          <p className="flex items-center text-gray-600 my-2">
+            <AiFillDollarCircle className="mr-1 mt-1 text-xl text-orange-400" />
+            {product.price}
+          </p>
+        </div>
         <Link
           to={`/products/${product._id}`}
-          className="py-2 text-blue-600 underline hover:text-blue-400 transition duration-100 text-sm"
+          className="flex items-center py-2 text-green-600 underline hover:text-green-400 transition duration-100 text-sm"
         >
           View Details
+          <AiOutlineArrowRight className="mt-1 ml-1 text-sm" />
         </Link>
       </div>
     </div>

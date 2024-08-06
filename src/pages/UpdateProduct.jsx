@@ -65,6 +65,7 @@ const UpdateProduct = () => {
       initialFormData={initialFormData}
       onSubmit={handleProductUpdate}
       formText="Update Product"
+      buttonText="Update"
     />
   );
 };
