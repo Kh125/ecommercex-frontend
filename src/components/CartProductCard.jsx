@@ -1,10 +1,16 @@
-const CartProductCard = ({ product, onItemCountChange }) => {
+import { FaRegTrashAlt } from "react-icons/fa";
+
+const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
   const onStockChange = (e) => {
     const newStock = parseInt(e.target.value, 10);
     if (!isNaN(newStock) && newStock > 0) {
       // console.log("stocke changes", newStock, product._id);
       onItemCountChange(product._id, newStock);
     }
+  };
+
+  const removeItem = () => {
+    onItemRemove(product._id);
   };
 
   return (
@@ -43,6 +49,10 @@ const CartProductCard = ({ product, onItemCountChange }) => {
             onChange={onStockChange}
           />
         </div>
+        <FaRegTrashAlt
+          onClick={removeItem}
+          className="text-2xl text-red-400 hover:text-red-600 transition duration-200 hover:open:"
+        />
       </div>
     </div>
   );

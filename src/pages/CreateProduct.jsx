@@ -7,7 +7,7 @@ const CreateProduct = () => {
   const axiosPrivateAPI = useAxiosPrivate();
 
   const handleProductCreate = async (formData) => {
-    console.log("formData", formData);
+    // console.log("formData", formData);
     const controller = new AbortController();
 
     try {
@@ -25,7 +25,7 @@ const CreateProduct = () => {
         }
       );
 
-      console.log(response.data);
+      // console.log(response.data);
       navigate("/products");
     } catch (error) {
       console.log("Error" + error);

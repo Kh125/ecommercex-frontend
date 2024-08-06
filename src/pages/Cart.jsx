@@ -1,9 +1,14 @@
 import React from "react";
 import CartProductCard from "../components/CartProductCard";
 import useCartContext from "../hooks/useCartContext";
+import useAxiosPrivate from "../middleware/usePrivateAxios";
+import useAuth from "../hooks/useAuth";
 
 const Cart = () => {
   const { cartItems, setCartItems } = useCartContext();
+  const isDisabled = cartItems.length === 0;
+  const { auth } = useAuth();
+  const axiosPrivateAPI = useAxiosPrivate();
 
   const handleStockChange = (productId, newStock) => {
     setCartItems((items) => {
@@ -17,9 +22,21 @@ const Cart = () => {
     });
   };
 
-  const handleProductOrder = (e) => {
+  const handleItemRemove = (productId) => {
+    let updatedproducts = cartItems.filter((q) => q._id !== productId);
+    setCartItems(updatedproducts);
+    localStorage.setItem("cartItems", JSON.stringify(updatedproducts));
+  };
+
+  const handleProductOrder = async (e) => {
     e.preventDefault();
-    console.log("Product Ordered", cartItems);
+    console.log("Purchase Ordered", cartItems);
+    console.log("AUTH", auth);
+    // try {
+    //   const response = await axiosPrivateAPI.post("/");
+    // } catch (error) {
+
+    // }
   };
 
   console.log("C", cartItems);
@@ -63,14 +80,20 @@ const Cart = () => {
                 key={item._id}
                 product={item}
                 onItemCountChange={handleStockChange}
+                onItemRemove={handleItemRemove}
               />
             ))}
           </div>
         )}
         <div className="mt-10 flex items-center justify-end">
           <button
+            disabled={isDisabled}
             type="submit"
-            className="flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 ease-in-out"
+            className={`flex items-center justify-center px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md ${
+              isDisabled
+                ? "cursor-not-allowed bg-blue-400 opacity-50"
+                : "hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 ease-in-out"
+            }`}
           >
             <svg
               className="w-5 h-5 mr-2 -ml-1"
@@ -86,7 +109,7 @@ const Cart = () => {
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            <span>Order Now</span>
+            <span>Proceed to Checkout</span>
           </button>
         </div>
       </div>

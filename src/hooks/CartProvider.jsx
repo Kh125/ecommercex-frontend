@@ -12,7 +12,7 @@ export const CartProvider = ({ children }) => {
     if (cartItems.length !== 0) {
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
     }
-  });
+  }, [cartItems, setCartItems]);
 
   return (
     <CartContext.Provider value={{ cartItems, setCartItems }}>

@@ -16,11 +16,11 @@ const Products = () => {
       try {
         const response = await axiosPrivateAPI.get("/products");
 
-        console.log(response.data?.products);
+        // console.log(response.data?.products);
 
         setProductList(response.data?.products);
       } catch (error) {
-        console.log(error?.response?.status);
+        // console.log(error?.response?.status);
         isTokenExpired(error?.response?.status);
       }
     };

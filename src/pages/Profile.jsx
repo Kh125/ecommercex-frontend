@@ -1,99 +1,133 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import useAxiosPrivate from "../middleware/usePrivateAxios";
+import useAuth from "../hooks/useAuth";
 
 const Profile = () => {
+  const { auth } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const [passwordResetMode, setPasswordResetMode] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const axiosPrivateAPI = useAxiosPrivate();
 
-  const [user, setUser] = useState({
-    _id: "64a7b0b3f3d8e5a7d9c5a2f1",
-    username: "john_doe",
-    email: "john.doe@example.com",
-    passwordHash: "$2b$10$CwTycUXn / W4FG5A7oO.T.",
-    address: {
-      street: "123 Elm Street",
-      city: "Springfield",
-      state: "IL",
-      postalCode: "62704",
-      country: "USA",
-    },
-    phone: "+1 (555) 123-4567",
-    createdAt: "2023-10-01T12:34:56Z",
-    updatedAt: "2024-07-01T12:34:56Z",
-    orders: [
-      {
-        orderId: "64a7b0b3f3d8e5a7d9c5a2f2",
-        date: "2024-07-15T14:20:00Z",
-        totalAmount: 49.99,
-        status: "Shipped",
-      },
-      {
-        orderId: "64a7b0b3f3d8e5a7d9c5a2f3",
-        date: "2024-08-05T10:15:00Z",
-        totalAmount: 89.99,
-        status: "Delivered",
-      },
-    ],
-  });
+  //password reset
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [matchPassword, setMatchPassword] = useState(true);
+  const [passwordResetErrors, setPasswordResetErrors] = useState(null);
+
+  const handlePasswordMatch = (e) => {
+    const newPasswordValue = e.target.value;
+    setNewPassword(newPasswordValue);
+    setMatchPassword(newPasswordValue === confirmPassword);
+  };
+
+  const handleConfirmPasswordMatch = (e) => {
+    const confirmPasswordValue = e.target.value;
+    setConfirmPassword(confirmPasswordValue);
+    setMatchPassword(newPassword === confirmPasswordValue);
+  };
 
   useEffect(() => {
-    // setProfileData(user);
-  }, [user]);
+    const fetchUserInformation = async () => {
+      try {
+        console.log("Auth", auth);
+        const response = await axiosPrivateAPI.get(
+          `/auth/userInfo/${auth?.user}`
+        );
+        console.log("USer", response?.data?.user);
+        setUserInfo(response?.data?.user);
+      } catch (error) {
+        console.log("UserInfo Fetch Error", error?.response);
+      }
+    };
+
+    fetchUserInformation();
+  }, []);
 
   const handleInputChange = (e) => {
+    console.log("Etarget", e.target);
     const { name, value } = e.target;
-    // setProfileData((prev) => ({ ...prev, [name]: value }));
+
+    if (name.startsWith("address.")) {
+      const fieldName = name.split(".")[1];
+      setUserInfo((prevState) => ({
+        ...prevState,
+        address: {
+          ...prevState.address,
+          [fieldName]: value,
+        },
+      }));
+    } else {
+      setUserInfo((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Implement save functionality
-    // setEditMode(false);
+    console.log("User Info", userInfo);
+
+    try {
+      const response = await axiosPrivateAPI.post("/auth/userInfo", {
+        user: userInfo,
+      });
+
+      // console.log(response.data);
+    } catch (error) {
+      console.log(error?.response);
+    }
+
+    setEditMode(false);
   };
 
-  const handleResetPassword = () => {
-    console.log("Password Reset");
+  const handleResetPassword = async () => {
+    if (
+      currentPassword !== "" &&
+      newPassword !== "" &&
+      confirmPassword !== ""
+    ) {
+      console.log("Password Reset");
+      try {
+        console.log("IND");
+        const response = await axiosPrivateAPI.post(
+          `/auth/password-reset/${auth?.user}`,
+          {
+            currentPassword,
+            newPassword,
+          }
+        );
+
+        setPasswordResetMode(false);
+        // console.log(response?.data);
+      } catch (error) {
+        // console.log(error.response);
+
+        if (error.response?.status === 400) {
+          const errs = error.response?.data?.errors
+            ? Object.values(error.response?.data?.errors)
+            : Object.values(error.response?.data);
+
+          const filteredErrors = errs.filter((e) => e.trim() !== "");
+
+          if (filteredErrors.length) {
+            setPasswordResetErrors(filteredErrors);
+          }
+
+          // console.log(filteredErrors);
+        }
+      }
+    } else {
+      alert("Password field cannot be empty!");
+    }
   };
-  if (!user) return <div>Loading...</div>;
+
+  if (!userInfo) return <div>Loading...</div>;
 
   return (
-    // <div className="p-6 bg-gray-50 min-h-screen">
-    //   <div className="max-w-3xl mx-auto p-6 bg-white shadow-xl rounded-lg">
-    //     <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b-4 border-blue-500 pb-2">
-    //       User Profile
-    //     </h1>
-    //     <div className="space-y-6">
-    //       <div className="flex items-center">
-    //         <div>
-    //           <h2 className="text-xl font-semibold">Email</h2>
-    //           <p className="text-gray-600">{user.email}</p>
-    //         </div>
-    //       </div>
-    //       <div className="flex items-center">
-    //         <div>
-    //           <h2 className="text-xl font-semibold">Address</h2>
-    //           <p className="text-gray-600">
-    //             {user.address.street}, {user.address.city}, {user.address.state}
-    //             , {user.address.postalCode}, {user.address.country}
-    //           </p>
-    //         </div>
-    //       </div>
-    //       <div className="flex items-center">
-    //         <div>
-    //           <h2 className="text-xl font-semibold">Phone</h2>
-    //           <p className="text-gray-600">{user.phone}</p>
-    //         </div>
-    //       </div>
-    //       <div className="flex items-center">
-    //         <div>
-    //           <h2 className="text-xl font-semibold">Joined</h2>
-    //           <p className="text-gray-600">
-    //             {new Date(user.createdAt).toLocaleDateString()}
-    //           </p>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {editMode && !passwordResetMode ? (
         <>
@@ -102,7 +136,7 @@ const Profile = () => {
             <input
               type="text"
               name="username"
-              value={user.username}
+              value={userInfo.username}
               onChange={handleInputChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             />
@@ -112,9 +146,9 @@ const Profile = () => {
             <input
               type="email"
               name="email"
-              value={user.email}
-              onChange={handleInputChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+              value={userInfo.email}
+              className="mt-1 block w-full p-2 border border-gray-300 bg-gray-300 rounded-lg"
+              disabled
             />
           </div>
           <div className="mb-4">
@@ -122,7 +156,7 @@ const Profile = () => {
             <input
               type="text"
               name="phone"
-              value={user.phone || ""}
+              value={userInfo.phone || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             />
@@ -131,40 +165,40 @@ const Profile = () => {
             <label className="block text-gray-700">Address</label>
             <input
               type="text"
-              name="address"
-              value={user.address.street || ""}
+              name="address.street"
+              value={userInfo.address?.street || ""}
               onChange={handleInputChange}
               placeholder="Street"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             />
             <input
               type="text"
-              name="city"
-              value={user.address.city || ""}
+              name="address.city"
+              value={userInfo.address?.city || ""}
               onChange={handleInputChange}
               placeholder="City"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             />
             <input
               type="text"
-              name="state"
-              value={user.address.state || ""}
+              name="address.state"
+              value={userInfo.address?.state || ""}
               onChange={handleInputChange}
               placeholder="State"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             />
             <input
               type="text"
-              name="postalCode"
-              value={user.address.postalCode || ""}
+              name="address.postalCode"
+              value={userInfo.address?.postalCode || ""}
               onChange={handleInputChange}
               placeholder="Postal Code"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
             />
             <input
               type="text"
-              name="country"
-              value={user.address.country || ""}
+              name="address.country"
+              value={userInfo.address?.country || ""}
               onChange={handleInputChange}
               placeholder="Country"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
@@ -188,12 +222,12 @@ const Profile = () => {
       ) : !editMode && !passwordResetMode ? (
         <>
           <div className="flex items-center justify-between mx-auto space-x-4 px-6">
-            <div className="w-[250px] h-full flex justify-center border-r border-cyan-400">
+            <div className="w-[250px] bg-green-700 flex justify-center py-20 rounded-tl-3xl rounded-br-3xl shadow-xl">
               <div className="text-center">
                 <img
-                  src={user.profileImage || "https://via.placeholder.com/150"}
+                  src={userInfo.profileImage || "../images/avatar.jpg"}
                   alt="Profile"
-                  className="w-32 h-32 rounded-full border-4 border-gray-300 object-cover mx-auto"
+                  className="w-32 h-32 rounded-full border-4 border-white object-cover mx-auto shadow-xl"
                 />
               </div>
             </div>
@@ -206,20 +240,20 @@ const Profile = () => {
                   <label className="block text-gray-700 font-semibold">
                     Username
                   </label>
-                  <p className="mt-1 text-gray-600">{user.username}</p>
+                  <p className="mt-1 text-gray-600">{userInfo.username}</p>
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold">
                     Email
                   </label>
-                  <p className="mt-1 text-gray-600">{user.email}</p>
+                  <p className="mt-1 text-gray-600">{userInfo.email}</p>
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold">
                     Phone
                   </label>
                   <p className="mt-1 text-gray-600">
-                    {user.phone || "No phone number"}
+                    {userInfo.phone || "No phone number"}
                   </p>
                 </div>
                 <div>
@@ -227,9 +261,9 @@ const Profile = () => {
                     Address
                   </label>
                   <p className="mt-1 text-gray-600">
-                    {user.address.street}, {user.address.city},{" "}
-                    {user.address.state}, {user.address.postalCode},{" "}
-                    {user.address.country}
+                    {userInfo.address?.street}, {userInfo.address?.city},{" "}
+                    {userInfo.address?.state}, {userInfo.address?.postalCode},{" "}
+                    {userInfo.address?.country}
                   </p>
                 </div>
                 <div>
@@ -237,7 +271,7 @@ const Profile = () => {
                     Joined
                   </label>
                   <p className="mt-1 text-gray-600">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {new Date(userInfo.createdAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex space-x-4">
@@ -264,12 +298,23 @@ const Profile = () => {
             Reset Password
           </h2>
           <div className="space-y-4">
+            {passwordResetErrors && (
+              <div className="border-red-300 bg-gray-200 p-10 rounded-lg shadow-sm">
+                {passwordResetErrors.map((error) => (
+                  <span key={error} className="text-red-500">
+                    {error}
+                  </span>
+                ))}
+              </div>
+            )}
             <div>
               <label className="block text-gray-700">Current Password</label>
               <input
                 type="password"
                 name="currentPassword"
+                value={currentPassword}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                onChange={(e) => setCurrentPassword(e.target.value)}
               />
             </div>
             <div>
@@ -277,7 +322,9 @@ const Profile = () => {
               <input
                 type="password"
                 name="newPassword"
+                value={newPassword}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                onChange={handlePasswordMatch}
               />
             </div>
             <div>
@@ -286,20 +333,25 @@ const Profile = () => {
               </label>
               <input
                 type="password"
-                name="confirmNewPassword"
+                name="confirmPassword"
+                value={confirmPassword}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                onChange={handleConfirmPasswordMatch}
               />
+              {!matchPassword && (
+                <span className="text-red-500">Password not match.</span>
+              )}
             </div>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={handleResetPassword}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+                className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-300"
               >
                 Reset Password
               </button>
               <button
                 onClick={() => setPasswordResetMode(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
               >
                 Cancel
               </button>

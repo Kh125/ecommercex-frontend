@@ -1,10 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { CgShoppingCart, CgLogOut } from "react-icons/cg";
-import { AiOutlineUser } from "react-icons/ai";
+import useCartContext from "../hooks/useCartContext";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
   const { auth, logout } = useAuth();
+  const { cartItems, setCartItems } = useCartContext();
+  const [itemCount, setItemCount] = useState(0);
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  useEffect(() => {
+    // console.log("Item count", cartItems.length);
+    if (cartItems.length > 0) {
+      setItemCount(cartItems.length);
+    } else {
+      setItemCount(0);
+    }
+  }, [cartItems, setCartItems]);
 
   return (
     <nav className="bg-gray-800">
@@ -24,13 +38,19 @@ const NavBar = () => {
                   <>
                     <Link
                       to="/login"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className={`rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white ${
+                        currentPath === "/login" ? "bg-gray-700 text-white" : ""
+                      }`}
                     >
                       Login
                     </Link>
                     <Link
                       to="/signup"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className={`rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white ${
+                        currentPath === "/signup"
+                          ? "bg-gray-700 text-white"
+                          : ""
+                      }`}
                     >
                       Sign Up
                     </Link>
@@ -40,21 +60,45 @@ const NavBar = () => {
                   <>
                     <Link
                       to="/products"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className={`rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white ${
+                        currentPath === "/products"
+                          ? "bg-gray-700 text-white"
+                          : ""
+                      }`}
                     >
                       Products
                     </Link>
                     <Link
                       to="/cart"
-                      className="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className={`relative flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white ${
+                        currentPath === "/cart" ? "bg-gray-700 text-white" : ""
+                      }`}
                     >
-                      <CgShoppingCart className="mr-1 text-xl" /> Cart
+                      Cart
+                      <CgShoppingCart className="ml-1 text-xl" />
+                      {itemCount != 0 && (
+                        <span className="absolute top-3 right-0 flex items-center justify-center w-[14px] h-[14px] font-semibold text-xs text-white bg-red-500 rounded-full -translate-x-1/2 -translate-y-1/2">
+                          {/* Replace `itemCount` with your actual item count */}
+                          {itemCount}
+                        </span>
+                      )}
                     </Link>
                     <Link
                       to="/profile"
-                      className="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className={`flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white ${
+                        currentPath === "/profile"
+                          ? "bg-gray-700 text-white"
+                          : ""
+                      }`}
                     >
-                      Profile <AiOutlineUser className="ml-1 text-xl" />
+                      Profile
+                      <div className="ml-2 w-6 h-6 text-center">
+                        <img
+                          src={"../images/avatar.jpg"}
+                          alt="Profile"
+                          className="w-6 h-6 rounded-full object-cover mx-auto"
+                        />
+                      </div>
                     </Link>
                     <a
                       onClick={logout}

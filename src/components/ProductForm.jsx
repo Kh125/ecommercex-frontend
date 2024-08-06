@@ -35,7 +35,7 @@ const ProductForm = ({
         color,
       });
 
-      console.log("submit success", result);
+      // console.log("submit success", result);
     } catch (error) {
       console.log("submit error", error);
     }

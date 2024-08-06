@@ -7,8 +7,9 @@ const ProductCard = ({ product }) => {
       key={product._id}
       className="bg-white shadow-lg rounded-lg overflow-hidden"
     >
+      {/* "https://placehold.co/300x200/d1d4ff/352cb5.png" */}
       <img
-        src={product.image || "https://placehold.co/300x200/d1d4ff/352cb5.png"} // Replace with actual image URL
+        src={product.image || "../images/product.jpg"}
         alt={product.name}
         className="w-full h-32 object-cover"
       />

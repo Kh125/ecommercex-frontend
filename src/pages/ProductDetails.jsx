@@ -16,7 +16,8 @@ const ProductDetails = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const addProductToCart = () => {
-    cartItems.push(product);
+    // cartItems.push(product);
+    setCartItems((prevState) => [...prevState, product]);
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     setIsAddedToCart(true);
   };
@@ -28,7 +29,7 @@ const ProductDetails = () => {
     setIsAddedToCart(false);
   };
 
-  console.log("Cart Items", cartItems);
+  // console.log("Cart Items", cartItems);
 
   useEffect(() => {
     const fetchProductInfo = async () => {
@@ -63,11 +64,9 @@ const ProductDetails = () => {
         <div className="flex flex-col md:flex-row md:items-center">
           {/* Image Section */}
           <div className="md:w-1/3 mb-6 md:mb-0">
+            {/* "https://i.ibb.co/QMdWfzX/component-image-one.png" */}
             <img
-              src={
-                product.image ||
-                "https://i.ibb.co/QMdWfzX/component-image-one.png"
-              } // Replace with actual image URL
+              src={product.image || "../images/product.jpg"} // Replace with actual image URL
               alt={product.name}
               className="w-full h-64 object-cover rounded-lg shadow-md"
             />
@@ -111,7 +110,13 @@ const ProductDetails = () => {
                 <AiOutlineRollback className="text-xl mr-1" />
                 Go Back
               </Link>
-              {!isAddedToCart && (
+              <Link
+                to={`/products/update/${id}`}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+              >
+                Update Product
+              </Link>
+              {!isAddedToCart ? (
                 <button
                   onClick={addProductToCart}
                   className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
@@ -119,8 +124,7 @@ const ProductDetails = () => {
                   <AiOutlineShoppingCart className="mr-1 text-xl" />
                   Add to Cart
                 </button>
-              )}
-              {isAddedToCart && (
+              ) : (
                 <button
                   onClick={removeProductFromCart}
                   className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-600 transition duration-300"
@@ -129,12 +133,6 @@ const ProductDetails = () => {
                   Remove from Cart
                 </button>
               )}
-              <Link
-                to={`/products/update/${id}`}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
-              >
-                Update Product
-              </Link>
             </div>
           </div>
         </div>
