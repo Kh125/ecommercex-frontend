@@ -20,10 +20,7 @@ const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
     >
       <div className="flex items-center">
         <img
-          src={
-            product.imageUrl ||
-            "https://i.ibb.co/QMdWfzX/component-image-one.png"
-          }
+          src={product.imageUrl || "../images/product.jpg"}
           alt={product.name}
           className="w-16 h-16 object-cover rounded-lg mr-4"
         />
@@ -36,7 +33,8 @@ const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
       </div>
       <div className="flex items-center justify-between space-x-4">
         <p className="text-green-700">
-          Stock: <span className="text-orange-400">{product.stock}</span>
+          Stock:{" "}
+          <span className="text-orange-400">{product.remainingStock}</span>
         </p>
         <div>
           <input

@@ -94,7 +94,9 @@ const ProductDetails = () => {
                 </tr>
                 <tr className="border-b border-gray-200">
                   <td className="py-2 px-4 text-gray-600">Stock</td>
-                  <td className="py-2 px-4 text-gray-800">{product.stock}</td>
+                  <td className="py-2 px-4 text-gray-800">
+                    {product.remainingStock}
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-200">
                   <td className="py-2 px-4 text-gray-600">Colors</td>
