@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { HashLoader } from "react-spinners";
 
 const ProductForm = ({
   initialFormData = {},
   onSubmit,
   formText,
   buttonText,
+  isUpdating,
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -144,9 +146,14 @@ const ProductForm = ({
           </Link>
           <button
             type="submit"
-            className="w-1/2 px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-1/2 px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 ${
+              isUpdating
+                ? "opacity-50 flex items-center justify-center space-x-3"
+                : ""
+            }`}
           >
-            {buttonText}
+            {!isUpdating && buttonText}
+            <HashLoader size={30} loading={isUpdating} color="#FFFFFF" />
           </button>
         </div>
       </form>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import ProductForm from "../components/ProductForm";
-import { axiosAPI } from "../middleware/axiosHelper";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
 import { createToastMessage } from "../utils/ToastMessage";
@@ -10,6 +9,7 @@ const UpdateProduct = () => {
   const [initialFormData, setInitialFormData] = useState({});
   const navigate = useNavigate();
   const axiosPrivateAPI = useAxiosPrivate();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProductInfo = async () => {
@@ -28,6 +28,7 @@ const UpdateProduct = () => {
 
   const handleProductUpdate = async (formData) => {
     // console.log("formData", formData);
+    setIsLoading(true);
     const controller = new AbortController();
 
     try {
@@ -46,10 +47,13 @@ const UpdateProduct = () => {
       );
 
       // console.log(response.data);
+      setIsLoading(false);
       navigate("/products");
-      createToastMessage("Product is successfully created!");
+      createToastMessage("Product is successfully updated!", 1);
     } catch (error) {
-      console.log("Error" + error);
+      // console.log("Error" + error);
+      setIsLoading(false);
+      createToastMessage("Failed to update product!", 4);
     } finally {
       controller.abort("Aborted Creation");
     }
@@ -61,6 +65,7 @@ const UpdateProduct = () => {
       onSubmit={handleProductUpdate}
       formText="Update Product"
       buttonText="Update"
+      isUpdating={isLoading}
     />
   );
 };

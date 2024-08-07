@@ -39,7 +39,7 @@ const Login = () => {
       setAuth({ token, user });
       setErrors(null);
       navigate(from, { replace: true });
-      createToastMessage("Login Successfully");
+      createToastMessage("Login Successfully", 1);
     } catch (err) {
       if (err.response) {
         const { data } = err.response;

@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
 import useAuth from "../hooks/useAuth";
 import { createToastMessage } from "../utils/ToastMessage";
+import { HashLoader } from "react-spinners";
 
 const Profile = () => {
   const { auth } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const [passwordResetMode, setPasswordResetMode] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const axiosPrivateAPI = useAxiosPrivate();
 
   //password reset
@@ -72,18 +74,21 @@ const Profile = () => {
     // Implement save functionality
     // console.log("User Info", userInfo);
 
+    setIsLoading(true);
     try {
       const response = await axiosPrivateAPI.post("/auth/userInfo", {
         user: userInfo,
       });
 
-      createToastMessage("User Information successfully updated!");
+      setIsLoading(false);
+      setEditMode(false);
+      createToastMessage("User Information successfully updated!", 1);
       // console.log(response.data);
     } catch (error) {
-      console.log(error?.response);
+      // console.log(error?.response);
+      setIsLoading(false);
+      createToastMessage("Failed to update user information", 4);
     }
-
-    setEditMode(false);
   };
 
   const handleResetPassword = async () => {
@@ -92,9 +97,10 @@ const Profile = () => {
       newPassword !== "" &&
       confirmPassword !== ""
     ) {
-      console.log("Password Reset");
+      // console.log("Password Reset");
+      setIsLoading(true);
       try {
-        console.log("IND");
+        // console.log("IND");
         const response = await axiosPrivateAPI.post(
           `/auth/password-reset/${auth?.user}`,
           {
@@ -102,13 +108,14 @@ const Profile = () => {
             newPassword,
           }
         );
-
+        setIsLoading(false);
         setPasswordResetMode(false);
-        createToastMessage(response?.data?.message);
+        createToastMessage(response?.data?.message, 1);
         // console.log(response?.data);
       } catch (error) {
         // console.log(error.response);
-
+        setIsLoading(false);
+        createToastMessage("Failed to reset password!", 4);
         if (error.response?.status === 400) {
           const errs = error.response?.data?.errors
             ? Object.values(error.response?.data?.errors)
@@ -119,7 +126,6 @@ const Profile = () => {
           if (filteredErrors.length) {
             setPasswordResetErrors(filteredErrors);
           }
-
           // console.log(filteredErrors);
         }
       }
@@ -209,14 +215,21 @@ const Profile = () => {
           </div>
           <div className="flex items-center justify-start space-x-4">
             <button
+              disabled={isLoading}
               onClick={handleSave}
-              className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+              className={`w-[150px] flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 ${
+                isLoading ? "opacity-50" : ""
+              }`}
             >
-              Save Changes
+              {!isLoading && "Save Changes"}
+              <HashLoader size={25} loading={isLoading} />
             </button>
             <button
+              disabled={isLoading}
               onClick={() => setEditMode(false)}
-              className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
+              className={`flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 ${
+                isLoading ? "opacity-50" : ""
+              }`}
             >
               Cancel
             </button>
@@ -347,14 +360,21 @@ const Profile = () => {
             </div>
             <div className="flex justify-end space-x-4">
               <button
+                disabled={isLoading}
                 onClick={handleResetPassword}
-                className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-300"
+                className={`w-[160px] flex justify-center px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-300 ${
+                  isLoading ? "opacity-50" : ""
+                }`}
               >
-                Reset Password
+                {!isLoading && "Reset Password"}
+                <HashLoader size={25} loading={isLoading} />
               </button>
               <button
+                disabled={isLoading}
                 onClick={() => setPasswordResetMode(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
+                className={`flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 ${
+                  isLoading ? "opacity-50" : ""
+                }`}
               >
                 Cancel
               </button>
