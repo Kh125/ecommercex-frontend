@@ -16,13 +16,14 @@ const ProductDetails = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const addProductToCart = () => {
-    // cartItems.push(product);
+    product.isAddedToCart = true;
     setCartItems((prevState) => [...prevState, product]);
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     setIsAddedToCart(true);
   };
 
   const removeProductFromCart = () => {
+    product.isAddedToCart = false;
     let updatedproducts = cartItems.filter((q) => q._id !== product._id);
     setCartItems(updatedproducts);
     localStorage.setItem("cartItems", JSON.stringify(updatedproducts));
@@ -95,7 +96,11 @@ const ProductDetails = () => {
                 <tr className="border-b border-gray-200">
                   <td className="py-2 px-4 text-gray-600">Stock</td>
                   <td className="py-2 px-4 text-gray-800">
-                    {product.remainingStock}
+                    {product.remainingStock > 0 ? (
+                      product.remainingStock
+                    ) : (
+                      <span className="text-red-400">Out of Stock</span>
+                    )}
                   </td>
                 </tr>
                 <tr className="border-b border-gray-200">
@@ -118,21 +123,23 @@ const ProductDetails = () => {
               >
                 Update Product
               </Link>
-              {!isAddedToCart ? (
-                <button
-                  onClick={addProductToCart}
-                  className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
-                >
-                  <AiOutlineShoppingCart className="mr-1 text-xl" />
-                  Add to Cart
-                </button>
-              ) : (
+
+              {isAddedToCart && product.remainingStock > 0 && (
                 <button
                   onClick={removeProductFromCart}
                   className="flex items-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-600 transition duration-300"
                 >
                   <AiOutlineShoppingCart className="mr-1 text-xl" />
                   Remove from Cart
+                </button>
+              )}
+              {!isAddedToCart && product.remainingStock > 0 && (
+                <button
+                  onClick={addProductToCart}
+                  className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+                >
+                  <AiOutlineShoppingCart className="mr-1 text-xl" />
+                  Add to Cart
                 </button>
               )}
             </div>

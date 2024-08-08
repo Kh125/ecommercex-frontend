@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
-import { AiFillDollarCircle, AiOutlineArrowRight } from "react-icons/ai";
+import {
+  AiFillDollarCircle,
+  AiOutlineArrowRight,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
 
 const ProductCard = ({ product }) => {
   return (
@@ -23,13 +27,26 @@ const ProductCard = ({ product }) => {
             {product.price}
           </p>
         </div>
-        <Link
-          to={`/products/${product._id}`}
-          className="flex items-center py-2 text-green-600 underline hover:text-green-400 transition duration-100 text-sm"
-        >
-          View Details
-          <AiOutlineArrowRight className="mt-1 ml-1 text-sm" />
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            to={`/products/${product._id}`}
+            className="flex items-center py-2 text-green-600 underline hover:text-green-400 transition duration-100 text-sm"
+          >
+            View Details
+            <AiOutlineArrowRight className="mt-1 ml-1 text-sm" />
+          </Link>
+          {product.isAddedToCart && product.remainingStock > 0 && (
+            <div className="flex items-center justify-center text-slate-400">
+              <AiOutlineShoppingCart className="mr-1" />
+              Added
+            </div>
+          )}
+          {product.remainingStock <= 0 && (
+            <div className="text-xs flex items-center justify-center text-red-300 line-through">
+              Out of Stock
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

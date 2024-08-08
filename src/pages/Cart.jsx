@@ -6,9 +6,11 @@ import useAuth from "../hooks/useAuth";
 import EmptyCart from "../components/EmptyCart";
 import { createToastMessage } from "../utils/ToastMessage";
 import ProductCheckout from "./ProductCheckout";
+import useAuthHelpers from "../utils/Validator";
 
 const Cart = () => {
   const { cartItems, setCartItems } = useCartContext();
+  const { isTokenExpired } = useAuthHelpers();
   const isDisabled = cartItems.length === 0;
   const { auth } = useAuth();
   const axiosPrivateAPI = useAxiosPrivate();
@@ -60,11 +62,13 @@ const Cart = () => {
       setPurchaseLoading(false);
       createToastMessage("Order is successfully created", 1);
       setCartItems([]);
+      localStorage.removeItem("cartItems");
       // console.log("User Address", userAddress);
     } catch (error) {
       console.log(error?.response);
       setPurchaseLoading(false);
       createToastMessage("Failed to create order!", 4);
+      isTokenExpired(error?.response?.status);
     }
   };
 

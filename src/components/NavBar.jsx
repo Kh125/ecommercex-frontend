@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { CgShoppingCart, CgLogOut } from "react-icons/cg";
+import { AiOutlineSetting } from "react-icons/ai";
 import useCartContext from "../hooks/useCartContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const NavBar = () => {
   const { auth, logout } = useAuth();
@@ -10,6 +11,8 @@ const NavBar = () => {
   const [itemCount, setItemCount] = useState(0);
   const location = useLocation();
   const currentPath = location.pathname;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     // console.log("Item count", cartItems.length);
@@ -18,6 +21,18 @@ const NavBar = () => {
     } else {
       setItemCount(0);
     }
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // return () => {
+    //   document.removeEventListener("mousedown", handleClickOutside);
+    // };
   }, [cartItems, setCartItems]);
 
   return (
@@ -84,28 +99,49 @@ const NavBar = () => {
                       )}
                     </Link>
                     <Link
-                      to="/profile"
+                      to="/orders"
                       className={`flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white ${
-                        currentPath === "/profile"
+                        currentPath === "/orders"
                           ? "bg-gray-700 text-white"
                           : ""
                       }`}
                     >
-                      Profile
-                      <div className="ml-2 w-6 h-6 text-center">
-                        <img
-                          src={"../images/avatar.jpg"}
-                          alt="Profile"
-                          className="w-6 h-6 rounded-full object-cover mx-auto"
-                        />
-                      </div>
+                      Orders
                     </Link>
-                    <a
-                      onClick={logout}
-                      className="flex items-center cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    <div
+                      className="z-20 flex items-center text-white justify-center hover:bg-gray-700 hover:text-white rounded-md"
+                      ref={dropdownRef}
                     >
-                      Logout <CgLogOut className="ml-1 text-xl" />
-                    </a>
+                      <button
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="px-6 py-2"
+                      >
+                        <AiOutlineSetting />
+                      </button>
+                      {isDropdownOpen && (
+                        <div className="absolute right-0 top-10 mt-2 w-24 bg-white border border-gray-300 rounded-md shadow-lg">
+                          <Link
+                            to="/profile"
+                            className={`flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-700 hover:text-white`}
+                          >
+                            Profile
+                            <div className="ml-2 w-6 h-6 text-center">
+                              <img
+                                src={"../images/avatar.jpg"}
+                                alt="Profile"
+                                className="w-6 h-6 rounded-full object-cover mx-auto"
+                              />
+                            </div>
+                          </Link>
+                          <a
+                            onClick={logout}
+                            className="flex items-center cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-700 hover:text-white"
+                          >
+                            Logout <CgLogOut className="ml-1 text-xl" />
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </>
                 )}
               </div>

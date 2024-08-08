@@ -8,6 +8,7 @@ import { HashLoader } from "react-spinners";
 import { createToastMessage } from "../utils/ToastMessage";
 import ErrorProductFetch from "../components/ErrorProductFetch";
 import EmptyProduct from "../components/EmptyProduct";
+import useCartContext from "../hooks/useCartContext";
 
 const Products = () => {
   const { setAuth } = useAuth();
@@ -16,13 +17,27 @@ const Products = () => {
   const { isTokenExpired } = useAuthHelpers();
   const [isLoading, setIsLoading] = useState(false);
   const [errorLoading, setErrorLoading] = useState(false);
+  const { cartItems, setCartItems } = useCartContext();
 
   const fetchProductDataList = async () => {
     setIsLoading(true);
     try {
       const response = await axiosPrivateAPI.get("/products");
       // console.log(response.data?.products);
-      setProductList(response.data?.products);
+      let products = response.data?.products;
+
+      if (products && cartItems) {
+        const cartItemIdList = cartItems.map((item) => item._id);
+
+        var updatedProducts = products.map((product) => ({
+          ...product,
+          isAddedToCart: cartItemIdList.includes(product._id),
+        }));
+      }
+
+      // console.log("UPD PRD", updatedProducts);
+
+      setProductList(updatedProducts);
       setErrorLoading(false);
       setIsLoading(false);
     } catch (error) {

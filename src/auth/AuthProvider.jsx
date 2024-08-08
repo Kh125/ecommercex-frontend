@@ -11,10 +11,13 @@ export const AuthProvider = ({ children }) => {
   });
   const { authLogout } = AuthService();
 
-  const logout = () => {
+  const logout = (isMessageShown = true) => {
     authLogout();
     setAuth(null);
-    createToastMessage("Logout successfully");
+
+    if (isMessageShown) {
+      createToastMessage("Logout successfully", 1);
+    }
   };
 
   useEffect(() => {
