@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import CartProductCard from "../components/CartProductCard";
 import useCartContext from "../hooks/useCartContext";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
 import useAuth from "../hooks/useAuth";
 import EmptyCart from "../components/EmptyCart";
 import { createToastMessage } from "../utils/ToastMessage";
-import ProductCheckout from "./ProductCheckout";
+import ProductCheckout from "../components/ProductCheckout";
 import useAuthHelpers from "../utils/Validator";
+import OrderPayment from "../components/OrderPayment";
+import CartItem from "../components/CartItem";
 
 const Cart = () => {
   const { cartItems, setCartItems } = useCartContext();
@@ -15,24 +16,13 @@ const Cart = () => {
   const { auth } = useAuth();
   const axiosPrivateAPI = useAxiosPrivate();
   const [toCheckout, setToCheckout] = useState(false);
+  const [toPayment, setToPayment] = useState(false);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
 
-  const handleStockChange = (productId, newStock) => {
-    setCartItems((items) => {
-      const updatedItems = items.map((item) =>
-        item._id === productId ? { ...item, buyCount: newStock } : item
-      );
-
-      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-
-      return updatedItems;
-    });
-  };
-
-  const handleItemRemove = (productId) => {
-    let updatedproducts = cartItems.filter((q) => q._id !== productId);
-    setCartItems(updatedproducts);
-    localStorage.setItem("cartItems", JSON.stringify(updatedproducts));
+  const handleProceedPayment = () => {
+    console.log("toPy", toPayment);
+    setToCheckout(false);
+    setToPayment(true);
   };
 
   const handleProductOrder = async (e) => {
@@ -59,6 +49,7 @@ const Cart = () => {
       });
 
       setToCheckout(false);
+      setToPayment(false);
       setPurchaseLoading(false);
       createToastMessage("Order is successfully created", 1);
       setCartItems([]);
@@ -100,17 +91,38 @@ const Cart = () => {
     }, 0);
   };
 
-  console.log("Cart Items", cartItems);
-  console.log("auth", auth);
+  const handleStockChange = (productId, newStock) => {
+    setCartItems((items) => {
+      const updatedItems = items.map((item) =>
+        item._id === productId ? { ...item, buyCount: newStock } : item
+      );
+
+      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+
+      return updatedItems;
+    });
+  };
+
+  const handleItemRemove = (productId) => {
+    let updatedproducts = cartItems.filter((q) => q._id !== productId);
+    setCartItems(updatedproducts);
+    localStorage.setItem("cartItems", JSON.stringify(updatedproducts));
+  };
+
+  // console.log("Cart Items", cartItems);
+  // console.log("auth", auth);
 
   return (
     <>
       {toCheckout ? (
         <ProductCheckout
           cartItems={cartItems}
-          isDisabled={isDisabled}
-          onProductOrder={handleProductOrder}
-          purchaseLoading={purchaseLoading}
+          onPaymentOrder={handleProceedPayment}
+        />
+      ) : toPayment ? (
+        <OrderPayment
+          isLoading={purchaseLoading}
+          onSubmit={handleProductOrder}
         />
       ) : (
         <form
@@ -126,7 +138,7 @@ const Cart = () => {
             ) : (
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <CartProductCard
+                  <CartItem
                     key={item._id}
                     product={item}
                     onItemCountChange={handleStockChange}

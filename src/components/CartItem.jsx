@@ -1,6 +1,6 @@
 import { AiFillRest } from "react-icons/ai";
 
-const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
+const CartItem = ({ product, onItemCountChange, onItemRemove }) => {
   const onStockChange = (e) => {
     const newStock = parseInt(e.target.value, 10);
     if (!isNaN(newStock) && newStock > 0) {
@@ -56,4 +56,4 @@ const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
   );
 };
 
-export default CartProductCard;
+export default CartItem;
