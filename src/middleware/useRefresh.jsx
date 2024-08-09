@@ -14,7 +14,8 @@ const useRefresh = () => {
       });
 
       const token = response.data?.accessToken;
-      setAuth({ token });
+      const user = response.data?.user;
+      setAuth({ token, user });
       console.log("Refresh Auth", auth);
       return token;
     } catch (error) {

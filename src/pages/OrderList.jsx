@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useAuthHelpers from "../utils/Validator";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
 import OrderCard from "../components/OrderCard";
+import EmptyOrderList from "../components/EmptyOrderList";
 
-const OrderHistory = () => {
+const OrderList = () => {
   const { auth } = useAuth();
   const { isTokenExpired } = useAuthHelpers();
   const axiosPrivateAPI = useAxiosPrivate();
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const fetchOrderHistory = async () => {
+    const fetchOrderList = async () => {
       try {
         const response = await axiosPrivateAPI.get(`/orders/${auth?.user}`);
         setOrders(response?.data.orders);
@@ -23,7 +23,7 @@ const OrderHistory = () => {
       }
     };
 
-    fetchOrderHistory();
+    fetchOrderList();
   }, []);
 
   return (
@@ -33,7 +33,7 @@ const OrderHistory = () => {
           Your Order History
         </h1>
         {orders.length === 0 ? (
-          <div className="text-center p-6">No orders found.</div>
+          <EmptyOrderList />
         ) : (
           <ul className="divide-y divide-gray-200">
             {orders.map((order) => (
@@ -46,4 +46,4 @@ const OrderHistory = () => {
   );
 };
 
-export default OrderHistory;
+export default OrderList;

@@ -17,9 +17,9 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import OrderHistory from "./pages/OrderHistory";
 import OrderDetails from "./pages/OrderDetails";
 import Footer from "./components/Footer";
+import OrderList from "./pages/OrderList";
 
 function App() {
   const { auth, setAuth } = useAuth();
@@ -77,7 +77,7 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="profile" element={<Profile />} />
               <Route path="cart" element={<Cart />} />
-              <Route path="orders" element={<OrderHistory />} />
+              <Route path="orders" element={<OrderList />} />
               <Route path="orders/:orderId" element={<OrderDetails />} />
               <Route path="products/:id" element={<ProductDetails />} />
               <Route path="products/create" element={<CreateProduct />} />

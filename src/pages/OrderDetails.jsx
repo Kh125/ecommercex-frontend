@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useAuthHelpers from "../utils/Validator";
 import useAxiosPrivate from "../middleware/usePrivateAxios";
-import EmptyOrderHistory from "../components/EmptyOrderHistory";
+import EmptyOrder from "../components/EmptyOrder";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { AiOutlineFilePdf } from "react-icons/ai";
@@ -76,7 +76,7 @@ const OrderDetails = () => {
   }, []);
 
   if (!order) {
-    return <EmptyOrderHistory />;
+    return <EmptyOrder />;
   }
 
   return (
