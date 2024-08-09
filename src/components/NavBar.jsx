@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { CgShoppingCart, CgLogOut } from "react-icons/cg";
-import { AiOutlineSetting } from "react-icons/ai";
+import { AiFillShopping, AiOutlineSetting } from "react-icons/ai";
 import useCartContext from "../hooks/useCartContext";
 import { useEffect, useRef, useState } from "react";
 
@@ -107,6 +107,7 @@ const NavBar = () => {
                       }`}
                     >
                       Orders
+                      <AiFillShopping className="ml-1 text-xl" />
                     </Link>
                     <div
                       className="z-20 flex items-center text-white justify-center hover:bg-gray-700 hover:text-white rounded-md"

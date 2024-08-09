@@ -1,4 +1,4 @@
-import { FaRegTrashAlt } from "react-icons/fa";
+import { AiFillRest } from "react-icons/ai";
 
 const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
   const onStockChange = (e) => {
@@ -47,7 +47,7 @@ const CartProductCard = ({ product, onItemCountChange, onItemRemove }) => {
             onChange={onStockChange}
           />
         </div>
-        <FaRegTrashAlt
+        <AiFillRest
           onClick={removeItem}
           className="text-2xl text-red-400 hover:text-red-600 transition duration-200 hover:open:"
         />

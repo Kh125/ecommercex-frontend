@@ -9,6 +9,7 @@ import { createToastMessage } from "../utils/ToastMessage";
 import ErrorProductFetch from "../components/ErrorProductFetch";
 import EmptyProduct from "../components/EmptyProduct";
 import useCartContext from "../hooks/useCartContext";
+import { AiOutlinePlusSquare } from "react-icons/ai";
 
 const Products = () => {
   const { setAuth } = useAuth();
@@ -17,7 +18,7 @@ const Products = () => {
   const { isTokenExpired } = useAuthHelpers();
   const [isLoading, setIsLoading] = useState(false);
   const [errorLoading, setErrorLoading] = useState(false);
-  const { cartItems, setCartItems } = useCartContext();
+  const { cartItems } = useCartContext();
 
   const fetchProductDataList = async () => {
     setIsLoading(true);
@@ -54,14 +55,7 @@ const Products = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        setAuth(null);
-      } else {
-        fetchProductDataList();
-      }
-    }, 10);
+    fetchProductDataList();
   }, []);
 
   return (
@@ -81,9 +75,10 @@ const Products = () => {
             </h1>
             <Link
               to="/products/create"
-              className="rounded-md px-6 py-2 text-sm font-medium text-white bg-green-400 hover:bg-green-600 transition duration-100"
+              className="flex items-center rounded-md px-6 py-2 text-sm font-medium text-white bg-green-400 hover:bg-green-600 transition duration-100"
             >
-              Add New Product
+              <AiOutlinePlusSquare className="text-xl mr-1" />
+              New Product
             </Link>
           </div>
           {errorLoading ? (

@@ -101,6 +101,7 @@ const Cart = () => {
   };
 
   console.log("Cart Items", cartItems);
+  console.log("auth", auth);
 
   return (
     <>

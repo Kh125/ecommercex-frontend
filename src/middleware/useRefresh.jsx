@@ -2,7 +2,7 @@ import useAuth from "../hooks/useAuth";
 import { axiosAPI } from "./axiosHelper";
 
 const useRefresh = () => {
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   const refreshToken = async () => {
     try {
@@ -15,6 +15,7 @@ const useRefresh = () => {
 
       const token = response.data?.accessToken;
       setAuth({ token });
+      console.log("Refresh Auth", auth);
       return token;
     } catch (error) {
       console.log("Refresh Error", error);
