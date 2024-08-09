@@ -28,7 +28,7 @@ const OrderCard = ({ order }) => {
       <div className="border-t border-dashed border-gray-400 block"></div>
       <Link
         to={`/orders/${order._id}`}
-        className="text-blue-500 text-sm hover:underline"
+        className="text-blue-400 text-sm underline hover:text-blue-600 transition duration-150"
       >
         View Details
       </Link>
